@@ -6,8 +6,15 @@ Prediction of TCRpMHC interaction from TCRpMHCmodels modeled structures. ESM-IF 
 Project Organization
 ------------
 
+    ├── README.md
+    │
     ├── TCRpMHCmodels
+    │   ├── README.md
+    │   ├── clean_pdb_files.py
+    │   ├── complex_modeling.py
+    │
     ├── scoring_TCRpMHC_structures
+    │   ├── README.md
     │   ├── datapreparation
     │   ├── prediction_models
     │   ├── visualization
