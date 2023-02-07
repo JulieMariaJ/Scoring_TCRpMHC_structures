@@ -17,7 +17,7 @@ Project Organization
     ├── scoring_TCRpMHC_structures
     │   ├── README.md
     │   ├── data
-    │   │   ├── raw_data
+    │   │   ├── raw
     │   │   │   ├── fastafiles              <- fastafiles over TCRpMHC sequences (solved/WT, SW, GGYN data)
     │   │   │   ├── TCRpMHC_structures      <- PDB-files over TCRpMHC structures (solved, WT, SW, GGYN data)
     │   │   │   └── template_identities     <- CSV-files over template selection identities (WT, SW, GGYN data)
@@ -28,11 +28,15 @@ Project Organization
     │   │       └── background_models       <- tsv-files over average predictions for each group (solved, WT, SW, GGYN data)
     │   │
     │   ├── datapreparation
-    │   │   ├── make_dataset.py             <- scripts generating ESM-IF1 predictions for peptide 
-    │   │   ├── all_cdr3_neighbours.py      <- scripts generating ESM-IF1 predictions for CDR3 residues in TCRalpha and beta within 4 Å
-    │   │   └── make_bg_frequencies.py      <- script 
+    │   │   ├── make_dataset.py             <- script generating ESM-IF1 predictions for peptides 
+    │   │   ├── all_cdr3_neighbours.py      <- script generating ESM-IF1 predictions for CDR3 residues in TCRalpha and beta within 4 Å
+    │   │   └── make_bg_frequencies.py      <- script generating average ESM-IF1 predictions for peptide across peptide group 
     │   │
     │   ├── prediction_models
+    │   │   ├── benchmark_test.py           <- script
+    │   │   ├── score_function.py           <- script
+    │   │   └── log_reg.py                  <- script 
+    │   │
     │   └── visualization
     │
     └── README.md
