@@ -5,8 +5,9 @@ Prediction of TCRpMHC interaction from TCRpMHCmodels modeled structures. ESM-IF 
 
 Guide for running pipeline 
 ------------
-- Datapreparation
+- Model structures 
     + Generate structures with TCRpMHCmodels as explained in the TCRpMHCmodels directory README.md file 
+- Datapreparation
     + Run make_dataset.py for ESM-IF1 prediction on peptide residues in complexes 
     + Run all_cdr3_neighbours.py for ESM-IF1 predictions on CDR3 residues (within 4Å) of TCR of complexes
     + Run make_bg_freqs.py for averaging ESM-IF1 predictions for each group (solved, WT, SW, GGYN data) 
