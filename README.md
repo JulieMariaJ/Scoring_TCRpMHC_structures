@@ -1,4 +1,5 @@
-# Master thesis: Structure-based Prediction of TCRpMHC Interaction Using Graph Neural Networks
+# Structure-based Prediction of TCRpMHC Interaction Using Graph Neural Networks
+Master thesis
 by: Charlotte Würtzen and Julie Maria Johansen
 
 ------------
