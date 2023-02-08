@@ -40,6 +40,7 @@ Project Organization
     │   │
     │   ├── visualization  
     │   │   ├── feature_distribution.py             <- script for plotting template identities
+    │   │   ├── ESM-IF1_bias.py                     <- script for plotting solved/WT scores and heatmap over average solved, WT, SW, GGYN data  
     │   │   └── CDR3_features.py                    <- script for plotting CDR3 bias and scores
     │   │
     │   └── result_figures                          <- plots for report
