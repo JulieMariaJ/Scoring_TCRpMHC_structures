@@ -49,8 +49,8 @@ Project Organization
     │
     └── README.md
 
-Project made with
+Project made at
 ------------
-Professor Morten Nielsen \
-Immunoinformatics and Machine-Learning group at the Department of Health Technology, Technical University of Denmark 
+Professor Morten Nielsen's group \
+Group of Immunoinformatics and Machine-Learning at the Department of Health Technology, Technical University of Denmark 
     
