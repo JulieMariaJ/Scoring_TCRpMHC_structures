@@ -50,12 +50,12 @@ def plot_total_iden(identity_df, xname='', yname='', top_temp=True, filename='')
                         hue_order=[1,0],
                         showmeans=True)
 
-    # add_stat_annotation(box, data=identity_df, x=xname, y=yname, hue='binder',
-    #                     box_pairs=[(("GIL", 0), ("GIL", 1)),
-    #                                 (("GLC", 0), ("GLC", 1)),
-    #                                 (("YLQ", 0), ("YLQ", 1)),
-    #                                 (("NLV", 0), ("NLV", 1))],
-    #                     test='t-test_ind', text_format='star', loc='inside', verbose=1, comparisons_correction=None)
+    add_stat_annotation(box, data=identity_df, x=xname, y=yname, hue='binder',
+                        box_pairs=[(("GIL", 0), ("GIL", 1)),
+                                    (("GLC", 0), ("GLC", 1)),
+                                    (("YLQ", 0), ("YLQ", 1)),
+                                    (("NLV", 0), ("NLV", 1))],
+                        test='t-test_ind', text_format='star', loc='inside', verbose=1, comparisons_correction=None)
 
     plt.title('Total identity', fontsize=14)
     plt.ylabel("Total identity (%)")
@@ -81,15 +81,15 @@ def plot_pep_MHC_tcrA_tcrB_iden(identity_df, identity_groups=[], titles=[], top_
                         showmeans=True, 
                         ax=axes[i,j])
 
-            # add_stat_annotation(box, data=identity_df, 
-            #                             x='peptide', 
-            #                             y=identity_df[identity_groups[count]], 
-            #                             hue='binder',
-            #                             box_pairs=[(("GIL", 0), ("GIL", 1)),
-            #                                         (("GLC", 0), ("GLC", 1)),
-            #                                         (("YLQ", 0), ("YLQ", 1)),
-            #                                         (("NLV", 0), ("NLV", 1))],
-            #             test='t-test_ind', text_format='star', loc='inside', verbose=1, comparisons_correction=None)
+            add_stat_annotation(box, data=identity_df, 
+                                        x='peptide', 
+                                        y=identity_df[identity_groups[count]], 
+                                        hue='binder',
+                                        box_pairs=[(("GIL", 0), ("GIL", 1)),
+                                                    (("GLC", 0), ("GLC", 1)),
+                                                    (("YLQ", 0), ("YLQ", 1)),
+                                                    (("NLV", 0), ("NLV", 1))],
+                        test='t-test_ind', text_format='star', loc='inside', verbose=1, comparisons_correction=None)
 
             axes[i,j].set(ylabel = "Sequence identity (%)", xlabel = "")
             if top_temp == False:
@@ -105,27 +105,18 @@ def plot_pep_MHC_tcrA_tcrB_iden(identity_df, identity_groups=[], titles=[], top_
 
 print("Collecting features ...")
 
-GIL_features = Path(ESMPATH, 'peptide_features/GIL/features_padding.tsv')
-GLC_features = Path(ESMPATH, 'peptide_features/GLC/features_padding.tsv')
-NLV_features = Path(ESMPATH, 'peptide_features/YLQ/features_padding.tsv')
-YLQ_features = Path(ESMPATH, 'peptide_features/NLV/features_padding.tsv')
-
-## get pdb models and template csvs      
-#GIL_pdbs = glob.glob(tcrpmhcmodels_path + 'GIL_peptides_StitchR/pdb_models_w66_t95/*TCR-pMHC.pdb')
+## get features and template csvs      
 GIL_templates = glob.glob(str(Path(RAWPATH, 'template_identities/GIL')) + '/*complex-templates.csv')
-GIL_df = pd.read_csv(GIL_features, sep='\t', index_col=0)
+GIL_df = pd.read_csv(Path(ESMPATH, 'peptide_features/GIL/features_padding.tsv'), sep='\t', index_col=0)
 
-#GLC_pdbs = glob.glob(tcrpmhcmodels_path + 'notGIL_peptides_StitchR/pdb_models_GLC_w66_t95/*TCR-pMHC.pdb')
 GLC_templates = glob.glob(str(Path(RAWPATH, 'template_identities/GLC')) + '/*complex-templates.csv')
-GLC_df = pd.read_csv(GLC_features, sep='\t', index_col=0)
+GLC_df = pd.read_csv(Path(ESMPATH, 'peptide_features/GLC/features_padding.tsv'), sep='\t', index_col=0)
 
-#YLQ_pdbs = glob.glob(tcrpmhcmodels_path + 'notGIL_peptides_StitchR/pdb_models_YLQPRTFLL_w66_t95/*TCR-pMHC.pdb')
 YLQ_templates = glob.glob(str(Path(RAWPATH, 'template_identities/YLQ')) + '/*complex-templates.csv')
-YLQ_df = pd.read_csv(YLQ_features, sep='\t', index_col=0)
+YLQ_df = pd.read_csv(Path(ESMPATH, 'peptide_features/YLQ/features_padding.tsv'), sep='\t', index_col=0)
 
-#NLV_pdbs = glob.glob(tcrpmhcmodels_path + 'notGIL_peptides_StitchR/pdb_models_NLV/*TCR-pMHC.pdb')
 NLV_templates = glob.glob(str(Path(RAWPATH, 'template_identities/NLV')) + '/*complex-templates.csv')
-NLV_df = pd.read_csv(NLV_features, sep='\t', index_col=0)
+NLV_df = pd.read_csv(Path(ESMPATH, 'peptide_features/NLV/features_padding.tsv'), sep='\t', index_col=0)
 
 # collect top temp info
 GIL_top_templates = collect_top_temp_info(GIL_templates)
@@ -140,13 +131,13 @@ YLQ_top_temp_df = convert_top_temp_to_df(YLQ_top_templates)
 NLV_top_temp_df = convert_top_temp_to_df(NLV_top_templates)
 
 ## add binder information
-for top_temp_df, feat_df in zip([GIL_top_temp_df, GLC_top_temp_df, YLQ_top_temp_df, NLV_top_temp_df],
-                                    [GIL_df, GLC_df, YLQ_df, NLV_df]):
+for top_temp_df, feat_df in zip([GIL_top_temp_df, GLC_top_temp_df, YLQ_top_temp_df, NLV_top_temp_df],[GIL_df, GLC_df, YLQ_df, NLV_df]):
     top_temp_df['binder'] = feat_df['binder']
 
 ## collect to one dataframe
 GIL_top_temp_df['peptide'], GLC_top_temp_df['peptide'], YLQ_top_temp_df['peptide'], NLV_top_temp_df['peptide'] = 'GIL', 'GLC', 'YLQ', 'NLV'
 all_peptides_top_iden = pd.concat([GIL_top_temp_df, GLC_top_temp_df, YLQ_top_temp_df, NLV_top_temp_df])
+#print(all_peptides_top_iden)
 
 ### collect features for avg identities
 GIL_df['peptide'], GLC_df['peptide'], YLQ_df['peptide'], NLV_df['peptide'] = 'GIL', 'GLC', 'YLQ', 'NLV'
@@ -159,7 +150,6 @@ print("Doing visualizations ...")
 
 ### Plot 1: Distribution of total identity scores (Top template)
 sns.set_style("whitegrid")
-print(Path(RESULTSPATH, 'top_total_iden.pdf'))
 plot_total_iden(all_peptides_top_iden, 
                 xname='peptide', 
                 yname='total_identity', 
