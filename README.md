@@ -1,7 +1,6 @@
-# GitHub repository under construction
-
-## Master thesis: Structure-based Prediction of TCRpMHC Interaction Using Graph Neural Networks
+# Master thesis: Structure-based Prediction of TCRpMHC Interaction Using Graph Neural Networks
 by: Charlotte Würtzen and Julie Maria Johansen
+
 ------------
 Prediction of TCRpMHC interaction from TCRpMHCmodels modeled structures. ESM-IF is utilized for binding prediction.
 
