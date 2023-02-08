@@ -12,12 +12,8 @@ from dotenv import find_dotenv, load_dotenv
 
 ## PATHS ##
 
-# dotenv_path = find_dotenv()
-# ROOTPATH = Path(find_dotenv()).parent
-# PROCESSEDPATH = Path(ROOTPATH, 'data/processed')
-# RESULTSPATH = Path(ROOTPATH, 'reports/figures') ## change to new git structures
 dotenv_path = find_dotenv()
-ROOTPATH = Path(find_dotenv())
+ROOTPATH = Path(find_dotenv()).parent
 ESMPATH = Path(ROOTPATH, 'data/ESM-IF1_predictions')
 RESULTSPATH = Path(ROOTPATH, 'result_figures') ## change to new git structures
 
