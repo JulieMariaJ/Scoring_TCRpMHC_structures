@@ -48,4 +48,8 @@ Project Organization
     │   └── result_figures                          <- plots for report
     │
     └── README.md
+
+------------
+Professor Morten Nielsen 
+Immunoinformatics and Machine-Learning group at the Department of Health Technology, Technical University of Denmark 
     
