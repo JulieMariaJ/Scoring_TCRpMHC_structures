@@ -14,8 +14,9 @@ from dotenv import find_dotenv, load_dotenv
 
 dotenv_path = find_dotenv()
 ROOTPATH = Path(find_dotenv()).parent
-PROCESSEDPATH = Path(ROOTPATH, 'data/processed')
-RESULTSPATH = Path(ROOTPATH, 'reports/figures') ## change to new git structures
+RAWPATH = Path(ROOTPATH, 'data/raw')
+ESMPATH = Path(ROOTPATH, 'data/ESM-IF1_predictions')
+RESULTSPATH = Path(ROOTPATH, 'result_figures')
 
 ## FUNCTIONS ##
 
@@ -126,56 +127,56 @@ def plot_cdr3_heatmap_corr(all_dfs, combination_names, plot_title='', filename='
 #################### Load average dataframes ######################
 
 ### Load average df for GGYN
-total_background_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/GGYN_avg_df.tsv'), sep='\t', index_col=0)
+total_background_df = pd.read_csv(Path(ESMPATH, 'background_models/GGYN_avg_df.tsv'), sep='\t', index_col=0)
 
 # GIL 
-GIL_bind_cdr3A_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/GIL_bind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
-GIL_bind_cdr3B_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/GIL_bind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
-GIL_nonbind_cdr3A_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/GIL_nonbind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
-GIL_nonbind_cdr3B_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/GIL_nonbind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
+GIL_bind_cdr3A_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/GIL_bind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
+GIL_bind_cdr3B_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/GIL_bind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
+GIL_nonbind_cdr3A_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/GIL_nonbind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
+GIL_nonbind_cdr3B_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/GIL_nonbind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
 
 # GLC
-GLC_bind_cdr3A_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/GLC_bind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
-GLC_bind_cdr3B_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/GLC_bind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
-GLC_nonbind_cdr3A_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/GLC_nonbind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
-GLC_nonbind_cdr3B_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/GLC_nonbind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
+GLC_bind_cdr3A_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/GLC_bind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
+GLC_bind_cdr3B_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/GLC_bind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
+GLC_nonbind_cdr3A_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/GLC_nonbind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
+GLC_nonbind_cdr3B_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/GLC_nonbind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
 
 # YLQ
-YLQ_bind_cdr3A_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/YLQ_bind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
-YLQ_bind_cdr3B_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/YLQ_bind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
-YLQ_nonbind_cdr3A_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/YLQ_nonbind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
-YLQ_nonbind_cdr3B_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/YLQ_nonbind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
+YLQ_bind_cdr3A_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/YLQ_bind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
+YLQ_bind_cdr3B_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/YLQ_bind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
+YLQ_nonbind_cdr3A_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/YLQ_nonbind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
+YLQ_nonbind_cdr3B_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/YLQ_nonbind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
 
 # NLV
-NLV_bind_cdr3A_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/NLV_bind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
-NLV_bind_cdr3B_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/NLV_bind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
-NLV_nonbind_cdr3A_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/NLV_nonbind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
-NLV_nonbind_cdr3B_avg_df = pd.read_csv(Path(PROCESSEDPATH, 'bg_files/cdr3/NLV_nonbind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
+NLV_bind_cdr3A_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/NLV_bind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
+NLV_bind_cdr3B_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/NLV_bind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
+NLV_nonbind_cdr3A_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/NLV_nonbind_cdr3A_avg_df.tsv'), sep='\t', index_col=0)
+NLV_nonbind_cdr3B_avg_df = pd.read_csv(Path(ESMPATH, 'background_models/cdr3/NLV_nonbind_cdr3B_avg_df.tsv'), sep='\t', index_col=0)
 
 #### Paths ####
-GIL_df = pd.read_csv(Path(PROCESSEDPATH, 'features_w66_t95/features_padding.tsv'), sep='\t', index_col=0)
+GIL_df = pd.read_csv(Path(ESMPATH, 'peptide_features/GIL/features_padding.tsv'), sep='\t', index_col=0)
 GIL_binder_names = list(GIL_df[GIL_df['binder'] == 1].index)
 GIL_nonbinder_names = list(GIL_df[GIL_df['binder'] == 0].index)
-GIL_cdr3A_tsv_path = str(Path(PROCESSEDPATH, 'features_w66_t95/all_nearN_cdr3A_features')) + '/'
-GIL_cdr3B_tsv_path = str(Path(PROCESSEDPATH, 'features_w66_t95/all_nearN_cdr3B_features')) + '/'
+GIL_cdr3A_tsv_path = str(Path(ESMPATH, 'CDR3_features/GIL/all_nearN_cdr3A_features')) + '/'
+GIL_cdr3B_tsv_path = str(Path(ESMPATH, 'CDR3_features/GIL/all_nearN_cdr3B_features')) + '/'
 
-GLC_df = pd.read_csv(Path(PROCESSEDPATH, 'features_GLC_w66_t95/features_padding.tsv'), sep='\t', index_col=0)
+GLC_df = pd.read_csv(Path(ESMPATH, 'peptide_features/GLC/features_padding.tsv'), sep='\t', index_col=0)
 GLC_binder_names = list(GLC_df[GLC_df['binder'] == 1].index)
 GLC_nonbinder_names = list(GLC_df[GLC_df['binder'] == 0].index)
-GLC_cdr3A_tsv_path = str(Path(PROCESSEDPATH, 'features_GLC_w66_t95/all_nearN_cdr3A_features')) + '/'
-GLC_cdr3B_tsv_path = str(Path(PROCESSEDPATH, 'features_GLC_w66_t95/all_nearN_cdr3B_features')) + '/'
+GLC_cdr3A_tsv_path = str(Path(ESMPATH, 'CDR3_features/GLC/all_nearN_cdr3A_features')) + '/'
+GLC_cdr3B_tsv_path = str(Path(ESMPATH, 'CDR3_features/GLC/all_nearN_cdr3B_features')) + '/'
 
-YLQ_df = pd.read_csv(Path(PROCESSEDPATH, 'features_YLQPRTFLL_w66_t95/features_padding.tsv'), sep='\t', index_col=0)
+YLQ_df = pd.read_csv(Path(ESMPATH, 'peptide_features/YLQ/features_padding.tsv'), sep='\t', index_col=0)
 YLQ_binder_names = list(YLQ_df[YLQ_df['binder'] == 1].index)
 YLQ_nonbinder_names = list(YLQ_df[YLQ_df['binder'] == 0].index)
-YLQ_cdr3A_tsv_path = str(Path(PROCESSEDPATH, 'features_YLQPRTFLL_w66_t95/all_nearN_cdr3A_features')) + '/'
-YLQ_cdr3B_tsv_path = str(Path(PROCESSEDPATH, 'features_YLQPRTFLL_w66_t95/all_nearN_cdr3B_features')) + '/'
+YLQ_cdr3A_tsv_path = str(Path(ESMPATH, 'CDR3_features/YLQ/all_nearN_cdr3A_features')) + '/'
+YLQ_cdr3B_tsv_path = str(Path(ESMPATH, 'CDR3_features/YLQ/all_nearN_cdr3B_features')) + '/'
 
-NLV_df = pd.read_csv(Path(PROCESSEDPATH, 'features_NLV_w66_t95/features_padding.tsv'), sep='\t', index_col=0)
+NLV_df = pd.read_csv(Path(ESMPATH, 'peptide_features/NLV/features_padding.tsv'), sep='\t', index_col=0)
 NLV_binder_names = list(NLV_df[NLV_df['binder'] == 1].index)
 NLV_nonbinder_names = list(NLV_df[NLV_df['binder'] == 0].index)
-NLV_cdr3A_tsv_path = str(Path(PROCESSEDPATH, 'features_NLV_w66_t95/all_nearN_cdr3A_features')) + '/'
-NLV_cdr3B_tsv_path = str(Path(PROCESSEDPATH, 'features_NLV_w66_t95/all_nearN_cdr3B_features')) + '/'
+NLV_cdr3A_tsv_path = str(Path(ESMPATH, 'CDR3_features/NLV/all_nearN_cdr3A_features')) + '/'
+NLV_cdr3B_tsv_path = str(Path(ESMPATH, 'CDR3_features/NLV/all_nearN_cdr3B_features')) + '/'
 
 #### Calculate scores using bg ####
 
