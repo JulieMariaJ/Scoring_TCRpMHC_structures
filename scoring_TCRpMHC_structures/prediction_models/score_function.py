@@ -15,7 +15,7 @@ from dotenv import find_dotenv, load_dotenv
 dotenv_path = find_dotenv()
 ROOTPATH = Path(find_dotenv()).parent
 ESMPATH = Path(ROOTPATH, 'data/ESM-IF1_predictions')
-RESULTSPATH = Path(ROOTPATH, 'result_figures') ## change to new git structures
+RESULTSPATH = Path(ROOTPATH, 'result_figures') 
 
 ## FUNCTIONS ##
 
