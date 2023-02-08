@@ -33,11 +33,15 @@ Project Organization
     │   │   └── make_bg_frequencies.py      <- script generating average ESM-IF1 predictions for peptide across peptide group 
     │   │
     │   ├── prediction_models
-    │   │   ├── benchmark_test.py           <- script
-    │   │   ├── score_function.py           <- script
-    │   │   └── log_reg.py                  <- script 
+    │   │   ├── benchmark_test.py           <- script for initial test of score function on WT-SW dataset
+    │   │   ├── score_function.py           <- script for score function on GGYN dataset
+    │   │   └── log_reg.py                  <- script for logistic regression models on GGYN dataset
     │   │
-    │   └── visualization
+    │   ├── visualization  
+    │   │   ├── feature_distribution.py     <- script for plotting template identities
+    │   │   └── CDR3_features.py            <- script for plotting CDR3 bias and scores
+    │   │
+    │   └── result_figures                  <- plots for report
     │
     └── README.md
     
