@@ -23,7 +23,7 @@ import torch.nn.functional as F
 ## PATHS ##
 dotenv_path = find_dotenv()
 ROOTPATH = Path(find_dotenv()).parent
-PROCESSEDPATH = Path(ROOTPATH, 'data/ESM-IF1')
+PROCESSEDPATH = Path(ROOTPATH, 'data/ESM-IF1_predictions')
 
 ## FUNCTIONS ##
 
