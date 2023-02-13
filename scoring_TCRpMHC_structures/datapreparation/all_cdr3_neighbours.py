@@ -1,49 +1,64 @@
 import os
 import torch
 
-# set device to cuda
-#os.environ["CUDA_VISIBLE_DEVICES"]="0"
-
-# check device is cuda
-#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 device = torch.device("cpu")
 print("Using device (CPU/GPU):", device)
 
 import re
 import numpy as np
 import pandas as pd
-
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib import collections  as mc
-
 import random 
 import copy
-
 import glob
-
 import esm
 import esm.inverse_folding
-
 from scipy import stats
 from scipy.optimize import linprog
-
 import Bio
 from Bio import SeqIO
 from Bio import PDB
 from Bio.PDB import *
-#from Bio.PDB import NeighborSearch
-
 import sys
 import torch.nn.functional as F
-
 from sklearn import metrics
-
 from prody import parsePDB, fetchPDB, Contacts, getCoords, Chain
+from argparse import ArgumentParser, RawTextHelpFormatter
 
-# load model and alphabet 
-esm_model, alphabet = esm.pretrained.esm_if1_gvp4_t16_142M_UR50()
-esm_model = esm_model.eval()#.cuda()
+## PATHS ##
+dotenv_path = find_dotenv()
+ROOTPATH = Path(find_dotenv()).parent
+PROCESSEDPATH = Path(ROOTPATH, 'data/ESM-IF1_predictions')
+
+def cmdline_args():
+    # Make parser object
+    usage = f"""
+    # Make dataset for test as example
+    python3 all_cdr3_neighbours.py \
+    --pdb_dir data/raw/TCRpMHC_structures/GIL/ \
+    --output_dir data/ESM-IF1_predictions/CDR3_features/GIL/
+    """
+    p = ArgumentParser(
+        description="Make dataset",
+        formatter_class=RawTextHelpFormatter,
+        usage=usage,
+    )
+    p.add_argument(
+        "--pdb_dir",
+        required=True,
+        help="Input directory that contains TCRpMHCmodels generated pdbs and csvs",
+        metavar="FOLDER",
+    )
+    p.add_argument(
+        "--output_dir",
+        default=f"{PROCESSEDPATH}",
+        required=False,
+        help="Job output directory",
+        metavar="FOLDER",
+    )
+    return p.parse_args()
 
 def get_logits(fpath, chain_ids, target_chain_id, model, alphabet, annotation):
     """ Function extracting ESM-IF1 predicted logits from structures """
@@ -51,7 +66,6 @@ def get_logits(fpath, chain_ids, target_chain_id, model, alphabet, annotation):
     # return: target chain logits and amino acid sequence
 
     device = torch.device('cpu') 
-    #device = torch.device('cuda')
 
     structure = esm.inverse_folding.util.load_structure(fpath, chain_ids)
     coords, native_seqs = esm.inverse_folding.multichain_util.extract_coords_from_complex(structure)
@@ -158,60 +172,57 @@ AA_conversion = {'CYS': 'C', 'ASP': 'D', 'SER': 'S', 'GLN': 'Q', 'LYS': 'K',
  'ALA': 'A', 'VAL':'V', 'GLU': 'E', 'TYR': 'Y', 'MET': 'M', 'HOH': ''} # remove water
 
 
-##########
+def main(args, AA_conversion):
+    # load model and alphabet 
+    esm_model, alphabet = esm.pretrained.esm_if1_gvp4_t16_142M_UR50()
+    esm_model = esm_model.eval()
 
-# get logits
-chain_ids = ['A', 'B', 'M', 'P']
-tcr_chains = ['A', 'B']
-#neighbour_outpath = '/scratch/s174595/master_project/data/processed/features_w66_t95/'
-#neighbour_outpath = '/scratch/s174595/master_project/data/processed/features_GLC_w66_t95/'
-#neighbour_outpath = '/scratch/s174595/master_project/data/processed/features_NLV_w66_t95/'
-neighbour_outpath = '/scratch/s174595/master_project/data/processed/features_YLQPRTFLL_w66_t95/'
-#all_structures = glob.glob('/scratch/s174595/TCRpMHCmodels_new/tcrpmhc_models/GIL_peptides_StitchR/pdb_models_w66_t95/complex_*_TCR-pMHC.pdb')
-#all_structures = glob.glob('/scratch/s174564/TCRpMHCmodels_new/tcrpmhc_models/notGIL_peptides_StitchR/pdb_models_GLC_w66_t95/complex_*_TCR-pMHC.pdb')
-#all_structures = glob.glob('/scratch/s174564/TCRpMHCmodels_new/tcrpmhc_models/notGIL_peptides_StitchR/pdb_models_NLV/complex_*_TCR-pMHC.pdb')
-all_structures = glob.glob('/scratch/s174564/TCRpMHCmodels_new/tcrpmhc_models/notGIL_peptides_StitchR/pdb_models_YLQPRTFLL_w66_t95/complex_*_TCR-pMHC.pdb')
-no_files = len(all_structures)
+    #input arguments 
+    pdb_dir = args.pdb_dir
+    neighbour_outpath = args.output_dir
 
-print('Starting...')
+    #initialize
+    chain_ids = ['A', 'B', 'M', 'P']
+    tcr_chains = ['A', 'B']
+    all_structures = glob.glob(pdb_dir + 'complex_*_TCR-pMHC.pdb')
+    no_files = len(all_structures)
 
-#iterate over all structures get structure
-for count, pdb_file in enumerate(all_structures):
-    complex_name = re.split('_TCR-pMHC\.pdb', pdb_file.split('/')[-1])[0]
-    print(complex_name, count+1, '/', no_files)
-    #skip if files exist
-    if os.path.isfile(neighbour_outpath + 'all_nearN_cdr3A_features/' + complex_name + '.tsv') and os.path.isfile(neighbour_outpath + 'all_nearN_cdr3B_features/' + complex_name + '.tsv'):
-        print('File exists.')
-        continue
+    print('Starting...')
 
-    # get neighbours 
-    #TCR_num_neighbors, TCR_inter_res_idx = extract_TCR_neighbours(pdb_file)
-    _, TCR_inter_res_idx = extract_TCR_neighbours(pdb_file)
-
-    # get true TCR indexes
-    parser = PDBParser()
-    structure = parser.get_structure("example", pdb_file)
-    true_indexes = {"A": index_conversion(structure[0]["A"]), "B": index_conversion(structure[0]["B"])}
-
-    for chain, indexes in TCR_inter_res_idx.items():
-        nn_filepath = neighbour_outpath + 'all_nearN_cdr3' + str(chain) + '_features/' + complex_name + '.tsv'
-        
+    #iterate over all structures get structure
+    for count, pdb_file in enumerate(all_structures):
+        complex_name = re.split('_TCR-pMHC\.pdb', pdb_file.split('/')[-1])[0]
+        print(complex_name, count+1, '/', no_files)
         #skip if files exist
-        if os.path.isfile(nn_filepath):
+        if os.path.isfile(neighbour_outpath + 'all_nearN_cdr3A_features/' + complex_name + '.tsv') and os.path.isfile(neighbour_outpath + 'all_nearN_cdr3B_features/' + complex_name + '.tsv'):
             print('File exists.')
             continue
-        
-        #write tsv file with neighbour information 
-        with open(nn_filepath, 'a+') as neighbour_file: 
-            #print(chain, indexes)
-            logits, target_seq = get_logits(pdb_file, chain_ids, chain, esm_model, alphabet, "padding")
-            # get idx of TCR neighbour
-            for i, pos in enumerate(indexes):
-                if pos != None:
-                    for idx in pos:
-                        #print(idx)
-                        #print(target_seq[true_indexes[chain][idx]])
-                        AA_logit = logits[true_indexes[chain][idx[0]]]
-                        pos_prob = get_single_prob(AA_logit)
-                        letter = AA_conversion[idx[1]]
-                        neighbour_file.write('pos ' + str(i+1) + '\t' + '\t'.join([str(x.item()) for x in list(pos_prob)]) + '\t' + letter + '\n')
+
+        # get neighbours 
+        _, TCR_inter_res_idx = extract_TCR_neighbours(pdb_file)
+
+        # get true TCR indexes
+        parser = PDBParser()
+        structure = parser.get_structure("example", pdb_file)
+        true_indexes = {"A": index_conversion(structure[0]["A"]), "B": index_conversion(structure[0]["B"])}
+
+        for chain, indexes in TCR_inter_res_idx.items():
+            nn_filepath = neighbour_outpath + 'all_nearN_cdr3' + str(chain) + '_features/' + complex_name + '.tsv'
+            
+            #skip if files exist
+            if os.path.isfile(nn_filepath):
+                print('File exists.')
+                continue
+            
+            #write tsv file with neighbour information 
+            with open(nn_filepath, 'a+') as neighbour_file: 
+                #print(chain, indexes)
+                logits, target_seq = get_logits(pdb_file, chain_ids, chain, esm_model, alphabet, "padding")
+                # get idx of TCR neighbour
+                for i, pos in enumerate(indexes):
+                    if pos != None:
+                        for idx in pos:
+                            AA_logit = logits[true_indexes[chain][idx[0]]]
+                            pos_prob = get_single_prob(AA_logit)
+                            letter = AA_conversion[idx[1]]
+                            neighbour_file.write('pos ' + str(i+1) + '\t' + '\t'.join([str(x.item()) for x in list(pos_prob)]) + '\t' + letter + '\n')

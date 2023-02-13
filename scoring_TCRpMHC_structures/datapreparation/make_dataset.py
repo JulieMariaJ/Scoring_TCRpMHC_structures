@@ -20,20 +20,10 @@ import glob
 import torch 
 import torch.nn.functional as F
 
-#from numba import jit
-#import cudf
-
-# check device is cuda
-#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#print("Using device (CPU/GPU):", device)
-
 ## PATHS ##
 dotenv_path = find_dotenv()
 ROOTPATH = Path(find_dotenv()).parent
-PROCESSEDPATH = Path(ROOTPATH, 'data/processed')
-# sys.path.insert(0, str(ROOTPATH) + '/')
-# from src.path import random_array
-
+PROCESSEDPATH = Path(ROOTPATH, 'data/ESM-IF1')
 
 ## FUNCTIONS ##
 
@@ -51,11 +41,11 @@ def cmdline_args():
     # Make parser object
     usage = f"""
     # Make dataset for test as example
-    python3 make_dataset_new.py \
-    --input_dir data/raw/test/ \
-    --output_dir data/processed/test/ \
+    python3 make_dataset.py \
+    --input_dir data/raw/TCRpMHC_structures/solved/ \
+    --output_dir data/ESM-IF1/peptide_features/solved/ \
     --raw_data data/raw/nettcr_train_swapped_peptide_ls_3_full_tcr.csv \
-    --fasta_dir data/raw/test/ \
+    --fasta_dir data/raw/fastafiles/solved_WT/ \
     --annotation multichain \
     --relaxed False
     """
@@ -258,9 +248,7 @@ def save_features_tsv(complex_info, output_dir, annotation="multichain", raw_csv
         features_df = pd.DataFrame.from_dict(complex_info, orient='index', 
                                     columns=['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 
                                     'pep_iden_avg', 'mhc_iden_avg', 'tcrA_iden_avg', 'tcrB_iden_avg', 'total_iden_avg'])
-    # features_df = cudf.DataFrame.from_dict(complex_info, orient='index', 
-    #                             columns=['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 
-    #                             'pep_iden_avg', 'mhc_iden_avg', 'tcrA_iden_avg', 'tcrB_iden_avg', 'total_iden_avg', 'binder', 'partition'])
+    
     #save in processed
     if annotation.lower() == "multichain":
         out_path = output_dir + 'features_multichain.tsv'
@@ -281,7 +269,6 @@ def main(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device (CPU/GPU):", device)
 
-    #logger = logging.getLogger(__name__)
     log.info('making final data set from raw data')
 
     # load model and alphabet 
@@ -299,7 +286,7 @@ def main(args):
 
     #files 
     if raw_csv != None: 
-        raw_df = pd.read_csv(raw_csv, header=0) #raw_df = cudf.read_csv(raw_csv, header=0)
+        raw_df = pd.read_csv(raw_csv, header=0) 
     
     if relaxation == True:
         split_string = "_TCR-pMHC_Repair\.pdb" 
@@ -324,10 +311,8 @@ def main(args):
     complex_info = dict()
     count = 0
     for pdb_file in pdb_files:
-        #complex_name = pdb_file.split('/')[-1].rstrip(split_string).rstrip('_')
         complex_name = re.split(split_string, pdb_file.split('/')[-1])[0]
-        # if complex_name in ['3d39','3d3v', '3d39_SW','3d3v_SW']: #!!!
-        #     continue  ## !!!
+
         log.info(f'Starting {complex_name}...')
         csv_file = input_dir + complex_name + '-complex-templates.csv'
         
@@ -338,7 +323,6 @@ def main(args):
             try:
                 target_seq, all_pos_probs = collect_embeddings_from_tsv(tsv_file, fasta_file)
             # compute embs if .tsv file is empty
-            #except pd.errors.EmptyDataError:
             except:
                 target_seq, all_pos_probs = compute_IF1_embeddings(pdb_file, ['A','B','M','P'], 'P', 
                                                 model, alphabet, tsv_out_dir, complex_name, annotation)
