@@ -8,6 +8,7 @@ Guide to setup ESM-IF1 environment
     pip install git+https://github.com/facebookresearch/esm.git
 
 Additional packages:
+
     pip install matplotlib seaborn biopython python-dotenv
     pip uninstall scikit-learn
     pip install scikit-learn==1.1.0
