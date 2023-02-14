@@ -74,7 +74,7 @@ def add_peptide_score_bg(fastafiles, input_df, probs_path, background_df, which_
 
     return features_df
 
-def plot_scores_boxplot(scores_df, plot_title='', filename='', lines=False):
+def plot_scores_boxplot(scores_df, plot_title='', filename='', plot_lines=False):
 
     fig, ax = plt.subplots()
     sns.set_style("whitegrid")
@@ -98,7 +98,7 @@ def plot_scores_boxplot(scores_df, plot_title='', filename='', lines=False):
     lc_pos = mc.LineCollection([x for (j, x) in enumerate(lines) if delta_values[j] >= 0], colors='blue', linewidths=1.5, alpha=0.5)
     lc_neg = mc.LineCollection([x for (j, x) in enumerate(lines) if delta_values[j] < 0], colors='red', linewidths=1.5, alpha=0.5)    
     
-    if lines == True:
+    if plot_lines == True:
         ax = sns.stripplot(data = scores_df, color="black", jitter=False)
         ax.add_collection(lc_pos)
         ax.add_collection(lc_neg)
@@ -224,23 +224,23 @@ sns.set_style("whitegrid")
 plot_scores_boxplot(score_uniform_bg, 
                     plot_title='WT and SW scores using uniform background',
                     filename=Path(RESULTSPATH, 'WTSW_scores_uniformbg.pdf'),
-                    lines=False)
+                    plot_lines=False)
 
 ## Plot 2: WT and SW scores (BG: GGYN)
 plot_scores_boxplot(WTSW_score_df.drop(['delta_score', 'delta_mhc_iden', 'delta_tot_iden', 'delta_pep_iden', 'delta_tcrA_iden', 'delta_tcrB_iden'], axis=1), 
                     plot_title='WT and SW scores using GGYN background',
                     filename=Path(RESULTSPATH, 'WTSW_scores_GGYNbg.pdf'),
-                    lines=False)
+                    plot_lines=False)
 
 # with lines
 plot_scores_boxplot(score_uniform_bg, 
                     plot_title='WT and SW scores using uniform background',
                     filename=Path(RESULTSPATH, 'WTSW_scores_uniformbg_lines.pdf'),
-                    lines=True)
+                    plot_lines=True)
 plot_scores_boxplot(WTSW_score_df.drop(['delta_score', 'delta_mhc_iden', 'delta_tot_iden', 'delta_pep_iden', 'delta_tcrA_iden', 'delta_tcrB_iden'], axis=1), 
                     plot_title='WT and SW scores using GGYN background',
                     filename=Path(RESULTSPATH, 'WTSW_scores_GGYNbg_lines.pdf'),
-                    lines=True)
+                    plot_lines=True)
 
 ### Supplementary plots ###
 
