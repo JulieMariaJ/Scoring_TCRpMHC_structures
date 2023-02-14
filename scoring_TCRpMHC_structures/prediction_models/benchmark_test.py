@@ -74,7 +74,7 @@ def add_peptide_score_bg(fastafiles, input_df, probs_path, background_df, which_
 
     return features_df
 
-def plot_scores_boxplot(scores_df, plot_title='', filename=''):
+def plot_scores_boxplot(scores_df, plot_title='', filename='', lines=False):
 
     fig, ax = plt.subplots()
     sns.set_style("whitegrid")
@@ -83,14 +83,13 @@ def plot_scores_boxplot(scores_df, plot_title='', filename=''):
     # plot boxplot
     p_value_stud = stats.ttest_rel(scores_df["WT"], scores_df["SW"]).pvalue
     sns.boxplot(data = scores_df)
-    ax = sns.stripplot(data = scores_df, color="black", jitter=False)
 
     ## AUC for WT-SW
     y_preds = list(scores_df['WT'].values) + list(scores_df['SW'].values)
     y_true_binary = [1]*len(scores_df) + [0]*len(scores_df)
     auc = metrics.roc_auc_score(y_true_binary, y_preds)
 
-    # plot lines for pairwise WT-SW
+    # plot lines for pairwise WT-SW    
     lines = []
     delta_values = []
     for i, wt_dot in enumerate(scores_df["WT"]):
@@ -98,9 +97,11 @@ def plot_scores_boxplot(scores_df, plot_title='', filename=''):
         delta_values.append(wt_dot - scores_df["SW"][i])
     lc_pos = mc.LineCollection([x for (j, x) in enumerate(lines) if delta_values[j] >= 0], colors='blue', linewidths=1.5, alpha=0.5)
     lc_neg = mc.LineCollection([x for (j, x) in enumerate(lines) if delta_values[j] < 0], colors='red', linewidths=1.5, alpha=0.5)    
-    ax.add_collection(lc_pos)
-    ax.add_collection(lc_neg)
-    #print(len([x for (j, x) in enumerate(lines) if delta_values[j] >= 0]), len([x for (j, x) in enumerate(lines) if delta_values[j] < 0]))
+    
+    if lines == True:
+        ax = sns.stripplot(data = scores_df, color="black", jitter=False)
+        ax.add_collection(lc_pos)
+        ax.add_collection(lc_neg)
 
     plt.ylabel("Peptide score")
     plt.ylim([-24,14])
@@ -222,13 +223,24 @@ sns.set_style("whitegrid")
 ## Plot 1: WT and SW scores (BG: uniform)
 plot_scores_boxplot(score_uniform_bg, 
                     plot_title='WT and SW scores using uniform background',
-                    filename=Path(RESULTSPATH, 'WTSW_scores_uniformbg.pdf'))
+                    filename=Path(RESULTSPATH, 'WTSW_scores_uniformbg.pdf'),
+                    lines=False)
 
 ## Plot 2: WT and SW scores (BG: GGYN)
 plot_scores_boxplot(WTSW_score_df.drop(['delta_score', 'delta_mhc_iden', 'delta_tot_iden', 'delta_pep_iden', 'delta_tcrA_iden', 'delta_tcrB_iden'], axis=1), 
                     plot_title='WT and SW scores using GGYN background',
-                    filename=Path(RESULTSPATH, 'WTSW_scores_GGYNbg.pdf'))
+                    filename=Path(RESULTSPATH, 'WTSW_scores_GGYNbg.pdf'),
+                    lines=False)
 
+# with lines
+plot_scores_boxplot(score_uniform_bg, 
+                    plot_title='WT and SW scores using uniform background',
+                    filename=Path(RESULTSPATH, 'WTSW_scores_uniformbg_lines.pdf'),
+                    lines=True)
+plot_scores_boxplot(WTSW_score_df.drop(['delta_score', 'delta_mhc_iden', 'delta_tot_iden', 'delta_pep_iden', 'delta_tcrA_iden', 'delta_tcrB_iden'], axis=1), 
+                    plot_title='WT and SW scores using GGYN background',
+                    filename=Path(RESULTSPATH, 'WTSW_scores_GGYNbg_lines.pdf'),
+                    lines=True)
 
 ### Supplementary plots ###
 
