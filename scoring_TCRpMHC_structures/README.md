@@ -20,7 +20,3 @@ Guide for running pipeline
 
 Data found in data folder \
 Result figures can be seen in result_figures folder 
-
-Overview of workflow
-------------
-![alt text](https://github.com/JulieMariaJ/Scoring_TCRpMHC_structures/scoring_TCRpMHC_structures/result_figures/bellplot.pdf?raw=true)
