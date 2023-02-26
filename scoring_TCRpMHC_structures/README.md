@@ -23,4 +23,4 @@ Result figures can be seen in result_figures folder
 
 Overview of workflow
 ------------
-[pipeline.pdf](https://github.com/JulieMariaJ/Scoring_TCRpMHC_structures/files/10833582/pipeline.pdf)
+![alt text](https://github.com/JulieMariaJ/Scoring_TCRpMHC_structures/scoring_TCRpMHC_structures/result_figures/bellplot.pdf?raw=true)
